@@ -3,6 +3,8 @@ package personal.dvinov.calendar.service.listtrainers.api;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.Validate;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -24,6 +26,10 @@ public class ListTrainersHandler implements RequestHandler<ListTrainersRequest, 
 
     @Override
     public ListTrainersResponse handleRequest(ListTrainersRequest input, Context context) {
+        context.getLogger().log("Input: " + input);
+        
+        Validate.notNull(input.getLocation());
+        
         final List<Trainer> loadedTrainers = trainerLoader.listActiveTrainers(input.getLocation());
         final List<ListTrainersResponse.Trainer> trainersToReturn = loadedTrainers.stream()
                 .map(trainer -> new ListTrainersResponse.Trainer(trainer.getId(), trainer.getName()))
