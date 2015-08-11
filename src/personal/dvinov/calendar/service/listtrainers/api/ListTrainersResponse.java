@@ -2,6 +2,7 @@ package personal.dvinov.calendar.service.listtrainers.api;
 
 import java.util.List;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class ListTrainersResponse {
@@ -37,6 +38,28 @@ public class ListTrainersResponse {
 	                .append(name)
 	        .build();
 	    }
+        
+        @Override
+        public boolean equals(final Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            
+            if (obj == this) {
+                return true;
+            }
+            
+            if (obj.getClass() != getClass()) {
+                return false;
+            }
+            
+            Trainer other = (Trainer) obj;
+            
+            return new EqualsBuilder()
+                    .append(getId(), other.getId())
+                    .append(getName(), other.getName())
+            .build();
+        }
 	}
 	
 	private List<Trainer> trainers;
@@ -59,4 +82,25 @@ public class ListTrainersResponse {
                 .append(trainers)
         .build();
 	}
+    
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        
+        if (obj == this) {
+            return true;
+        }
+        
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        
+        ListTrainersResponse other = (ListTrainersResponse) obj;
+        
+        return new EqualsBuilder()
+                .append(getTrainers(), other.getTrainers())
+        .build();
+    }
 }

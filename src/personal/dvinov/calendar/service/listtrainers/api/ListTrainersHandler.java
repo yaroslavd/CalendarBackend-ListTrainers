@@ -26,9 +26,7 @@ public class ListTrainersHandler implements RequestHandler<ListTrainersRequest, 
 
     @Override
     public ListTrainersResponse handleRequest(ListTrainersRequest input, Context context) {
-        context.getLogger().log("Input: " + input);
-        
-        Validate.notNull(input.getLocation());
+        Validate.notNull(input.getLocation(), "Caller must pass in required 'location' parameter");
         
         final List<Trainer> loadedTrainers = trainerLoader.listActiveTrainers(input.getLocation());
         final List<ListTrainersResponse.Trainer> trainersToReturn = loadedTrainers.stream()
