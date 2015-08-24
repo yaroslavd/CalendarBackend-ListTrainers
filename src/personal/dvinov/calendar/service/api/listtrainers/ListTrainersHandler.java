@@ -27,6 +27,7 @@ public class ListTrainersHandler implements RequestHandler<ListTrainersRequest, 
     @Override
     public ListTrainersResponse handleRequest(ListTrainersRequest input, Context context) {
         context.getLogger().log("Input: " + input);
+        context.getLogger().log("Context: " + context);
         
         Validate.notNull(input.getLocation(), "Validation exception: 'location' parameter is required");
         
