@@ -10,6 +10,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 
+import personal.dvinov.calendar.service.api.common.util.ContextLogger;
 import personal.dvinov.calendar.service.core.trainers.dao.Trainer;
 import personal.dvinov.calendar.service.core.trainers.dao.TrainerLoader;
 
@@ -27,7 +28,7 @@ public class ListTrainersHandler implements RequestHandler<ListTrainersRequest, 
     @Override
     public ListTrainersResponse handleRequest(ListTrainersRequest input, Context context) {
         context.getLogger().log("Input: " + input);
-        context.getLogger().log("Context: " + context);
+        ContextLogger.logContext(context);
         
         Validate.notNull(input.getLocation(), "Validation exception: 'location' parameter is required");
         
@@ -37,5 +38,6 @@ public class ListTrainersHandler implements RequestHandler<ListTrainersRequest, 
                 .collect(Collectors.toList());
         return new ListTrainersResponse(trainersToReturn);
     }
+
 
 }
