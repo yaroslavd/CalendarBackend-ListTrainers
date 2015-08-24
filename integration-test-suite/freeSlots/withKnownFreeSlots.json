@@ -1,0 +1,13 @@
+{
+    "inclusiveStartDay": {
+        "year":  2015,
+        "month": 8,
+        "day":   23
+    },
+    "inclusiveEndDay": {
+        "year":  2015,
+        "month": 8,
+        "day":   30
+    },
+    "trainerId": "123"
+}

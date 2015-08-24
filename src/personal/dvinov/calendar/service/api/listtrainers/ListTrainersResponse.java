@@ -19,16 +19,8 @@ public class ListTrainersResponse {
             return id;
         }
 
-        public void setId(String id) {
-            this.id = id;
-        }
-
         public String getName() {
             return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
         }
 
         @Override
@@ -70,10 +62,6 @@ public class ListTrainersResponse {
 	
 	public List<Trainer> getTrainers() {
         return trainers;
-    }
-
-    public void setTrainers(List<Trainer> trainers) {
-        this.trainers = trainers;
     }
 
     @Override
