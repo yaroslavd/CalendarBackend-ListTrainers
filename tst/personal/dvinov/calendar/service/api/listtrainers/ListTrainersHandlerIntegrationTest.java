@@ -1,4 +1,4 @@
-package personal.dvinov.calendar.service.listtrainers.api;
+package personal.dvinov.calendar.service.api.listtrainers;
 
 import static org.junit.Assert.*;
 
@@ -7,7 +7,10 @@ import org.junit.Test;
 
 import com.amazonaws.services.lambda.runtime.Context;
 
-import personal.dvinov.calendar.service.listtrainers.api.ListTrainersResponse.Trainer;
+import personal.dvinov.calendar.service.api.listtrainers.ListTrainersHandler;
+import personal.dvinov.calendar.service.api.listtrainers.ListTrainersRequest;
+import personal.dvinov.calendar.service.api.listtrainers.ListTrainersResponse;
+import personal.dvinov.calendar.service.api.listtrainers.ListTrainersResponse.Trainer;
 
 public class ListTrainersHandlerIntegrationTest {
     private static final String KNOWN_TRAINER_NAME = "Yaro";

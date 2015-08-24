@@ -1,4 +1,4 @@
-package personal.dvinov.calendar.service.listtrainers.api;
+package personal.dvinov.calendar.service.api.listtrainers;
 
 public class ListTrainersRequest {
     private String location;

@@ -1,4 +1,4 @@
-package personal.dvinov.calendar.service.listtrainers.api;
+package personal.dvinov.calendar.service.api.listtrainers;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.*;
@@ -13,6 +13,9 @@ import org.mockito.Mock;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.google.common.collect.ImmutableList;
 
+import personal.dvinov.calendar.service.api.listtrainers.ListTrainersHandler;
+import personal.dvinov.calendar.service.api.listtrainers.ListTrainersRequest;
+import personal.dvinov.calendar.service.api.listtrainers.ListTrainersResponse;
 import personal.dvinov.calendar.service.core.trainers.dao.Trainer;
 import personal.dvinov.calendar.service.core.trainers.dao.TrainerLoader;
 

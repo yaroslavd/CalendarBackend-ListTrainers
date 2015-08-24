@@ -1,4 +1,4 @@
-package personal.dvinov.calendar.service.listtrainers.api;
+package personal.dvinov.calendar.service.api.listtrainers;
 
 import java.util.List;
 import java.util.stream.Collectors;

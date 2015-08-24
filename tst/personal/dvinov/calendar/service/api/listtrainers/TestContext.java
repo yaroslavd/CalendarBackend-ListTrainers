@@ -1,4 +1,4 @@
-package personal.dvinov.calendar.service.listtrainers.api;
+package personal.dvinov.calendar.service.api.listtrainers;
 
 import com.amazonaws.services.lambda.runtime.ClientContext;
 import com.amazonaws.services.lambda.runtime.CognitoIdentity;
