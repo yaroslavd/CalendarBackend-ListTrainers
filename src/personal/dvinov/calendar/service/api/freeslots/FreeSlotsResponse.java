@@ -4,25 +4,54 @@ import java.util.List;
 import java.util.Map;
 
 public class FreeSlotsResponse {
-    public static class Slots {
-        private List<Integer> slots;
+    public static class Slot {
+        private int slotIndex;
+        private int startHour;
+        private int startMinute;
+        private int endHour;
+        private int endMinute;
         
-        public Slots(final List<Integer> slots) {
-            this.slots = slots;
+        public Slot(final int slotIndex,
+                    final int startHour,
+                    final int startMinute,
+                    final int endHour,
+                    final int endMinute) {
+            
+            this.slotIndex = slotIndex;
+            this.startHour = startHour;
+            this.startMinute = startMinute;
+            this.endHour = endHour;
+            this.endMinute = endMinute;
         }
 
-        public List<Integer> getSlots() {
-            return slots;
+        public int getSlotIndex() {
+            return slotIndex;
+        }
+
+        public int getStartHour() {
+            return startHour;
+        }
+
+        public int getStartMinute() {
+            return startMinute;
+        }
+
+        public int getEndHour() {
+            return endHour;
+        }
+
+        public int getEndMinute() {
+            return endMinute;
         }
     }
     
-    private Map<Day, Slots> freeSlots;
+    private Map<Day, List<Slot>> freeSlots;
     
-    public FreeSlotsResponse(final Map<Day, Slots> freeSlots) {
+    public FreeSlotsResponse(final Map<Day, List<Slot>> freeSlots) {
         this.freeSlots = freeSlots;
     }
 
-    public Map<Day, Slots> getFreeSlots() {
+    public Map<Day, List<Slot>> getFreeSlots() {
         return freeSlots;
     }
 }

@@ -1,5 +1,7 @@
 package personal.dvinov.calendar.service.api.freeslots;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class FreeSlotsRequest {
     private Day inclusiveStartDay;
     private Day inclusiveEndDay;
@@ -37,5 +39,14 @@ public class FreeSlotsRequest {
 
     public void setTrainerId(String trainerId) {
         this.trainerId = trainerId;
+    }
+    
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append(inclusiveStartDay)
+                .append(inclusiveEndDay)
+                .append(trainerId)
+        .build();
     }
 }
