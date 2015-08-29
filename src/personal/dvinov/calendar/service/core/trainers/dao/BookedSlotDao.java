@@ -10,18 +10,18 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName = "BookedSlots")
-public class BookedSlot {
+public class BookedSlotDao {
     private String trainerId;
     private String dayPlusSlot;
     private String clientId;
     private Date startTime;
     private Date endTime;
     
-    public BookedSlot() {
+    public BookedSlotDao() {
         
     }
     
-    public BookedSlot(String trainerId,
+    public BookedSlotDao(String trainerId,
                        String dayPlusSlot,
                        String clientId,
                        Date startTime,

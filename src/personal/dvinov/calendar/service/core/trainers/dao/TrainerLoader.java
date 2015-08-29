@@ -22,11 +22,11 @@ public class TrainerLoader {
      * @param location
      * @return list of active trainers in given location; only trainer ids and names are filled in
      */
-    public List<Trainer> listActiveTrainers(final String location) {
+    public List<TrainerDao> listActiveTrainers(final String location) {
         // Since this table is expected to be small, we are not creating an index
         // However, if it grows large we can create a GSI with hash key of "location"
         // and range key of "active"
-        return mapper.scan(Trainer.class, activeTrainersExpression(location));
+        return mapper.scan(TrainerDao.class, activeTrainersExpression(location));
     }
     
     private DynamoDBScanExpression activeTrainersExpression(final String location) {

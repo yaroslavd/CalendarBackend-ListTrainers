@@ -16,15 +16,15 @@ import com.google.common.collect.ImmutableList;
 import personal.dvinov.calendar.service.api.listtrainers.ListTrainersHandler;
 import personal.dvinov.calendar.service.api.listtrainers.ListTrainersRequest;
 import personal.dvinov.calendar.service.api.listtrainers.ListTrainersResponse;
-import personal.dvinov.calendar.service.core.trainers.dao.Trainer;
+import personal.dvinov.calendar.service.core.trainers.dao.TrainerDao;
 import personal.dvinov.calendar.service.core.trainers.dao.TrainerLoader;
 
 public class ListTrainersHandlerTest {
     private static final String FAKE_TRAINER_NAME = "Yaro";
     private static final String FAKE_TRAINER_ID = "1";
     private static final String FAKE_LOCATION = "Seattle";
-    private static final List<Trainer> FAKE_TRAINERS = ImmutableList.of(
-            new Trainer(FAKE_TRAINER_ID, FAKE_LOCATION, FAKE_TRAINER_NAME, true));
+    private static final List<TrainerDao> FAKE_TRAINERS = ImmutableList.of(
+            new TrainerDao(FAKE_TRAINER_ID, FAKE_LOCATION, FAKE_TRAINER_NAME, true));
     
     @Mock private TrainerLoader loader;
     

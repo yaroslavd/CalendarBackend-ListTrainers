@@ -6,13 +6,23 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.google.common.collect.ImmutableMap;
 
+import personal.dvinov.calendar.service.core.trainers.business.BookedSlotBusinessObject;
+
 public class BookedSlotAdapter {
+    // Uses named capturing groups
+    // https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html#groupname
+    private static final Pattern DAY_PLUS_SLOT_PATTERN = Pattern.compile("(.*)-(.*)-(.*)-(?<slot>.*)");
+    
     private final DynamoDBMapper mapper;
     private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
     
@@ -20,11 +30,16 @@ public class BookedSlotAdapter {
         this.mapper = mapper;
     }
     
-    public List<BookedSlot> listBookedSlots(final String trainerId, final Instant startTime, final Instant endTime) {
-        return mapper.query(BookedSlot.class, listBookedSlotsExpression(trainerId, startTime, endTime));
+    public List<BookedSlotBusinessObject> listBookedSlots(final String trainerId, final Instant startTime, final Instant endTime) {
+        final List<BookedSlotDao> fromDynamo = mapper.query(
+                BookedSlotDao.class, listBookedSlotsExpression(trainerId, startTime, endTime));
+        
+        return fromDynamo.stream()
+                .map(fromDaoToBo())
+                .collect(Collectors.toList());
     }
     
-    private DynamoDBQueryExpression<BookedSlot> listBookedSlotsExpression(
+    private DynamoDBQueryExpression<BookedSlotDao> listBookedSlotsExpression(
             final String trainerId,
             final Instant startTime,
             final Instant endTime) {
@@ -32,7 +47,7 @@ public class BookedSlotAdapter {
         final String startDayPlusSlot = dayFromInstant(startTime, false);
         final String endDayPlusSlot = dayFromInstant(endTime, true);
 
-        return new DynamoDBQueryExpression<BookedSlot>()
+        return new DynamoDBQueryExpression<BookedSlotDao>()
             .withKeyConditionExpression(
                     "trainerId = :trainerId AND dayPlusSlot BETWEEN :startDayPlusSlot AND :endDayPlusSlot")
             .withFilterExpression("startTime >= :startTime AND endTime < :endTime")
@@ -56,5 +71,22 @@ public class BookedSlotAdapter {
     private LocalDateTime getLocalDateTime(final Instant time) {
         
         return LocalDateTime.ofInstant(time, ZoneId.systemDefault()).truncatedTo(ChronoUnit.DAYS);
+    }
+    
+    private Function<BookedSlotDao, BookedSlotBusinessObject> fromDaoToBo() {
+        return (dao) -> new BookedSlotBusinessObject(
+                dao.getStartTime().toInstant(),
+                dao.getEndTime().toInstant(),
+                slotFromDayPlusSlot(dao.getDayPlusSlot()));
+    }
+    
+    private int slotFromDayPlusSlot(final String dayPlusSlot) {
+        final Matcher matcher = DAY_PLUS_SLOT_PATTERN.matcher(dayPlusSlot);
+        if (!matcher.matches()) {
+            throw new IllegalStateException("No slot found in dayPlusSlot field '" + dayPlusSlot + "'");
+        }
+        
+        final String slotString =  matcher.group("slot");
+        return Integer.parseInt(slotString);
     }
 }

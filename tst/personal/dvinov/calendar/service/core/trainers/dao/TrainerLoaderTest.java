@@ -37,17 +37,17 @@ public class TrainerLoaderTest {
     
     @Before
     public void setUpTest() {
-        createDynamoTable(client, mapper, TABLE_NAME, Trainer.class);
+        createDynamoTable(client, mapper, TABLE_NAME, TrainerDao.class);
     }
     
     @Test
     public void listActiveTrainersReturnsSavedTrainer() {
-        final Trainer savedTrainer = getTestTrainer(true);
+        final TrainerDao savedTrainer = getTestTrainer(true);
         mapper.save(savedTrainer);
-        final List<Trainer> loadedTrainers = loader.listActiveTrainers(TEST_LOCATION);
+        final List<TrainerDao> loadedTrainers = loader.listActiveTrainers(TEST_LOCATION);
         
         assertEquals(1, loadedTrainers.size()); // should only return 1 trainer
-        final Trainer loadedTrainer = loadedTrainers.get(0);
+        final TrainerDao loadedTrainer = loadedTrainers.get(0);
         assertEquals(savedTrainer.getId(), loadedTrainer.getId()); // we only care about id and name
         assertEquals(savedTrainer.getName(), loadedTrainer.getName()); // so not calling equals()
     }
@@ -75,8 +75,8 @@ public class TrainerLoaderTest {
         assertResultHasTrainers(false);
     }
     
-    private Trainer getTestTrainer(final boolean active) {
-        return new Trainer(TEST_TRAINER_ID, TEST_LOCATION, TEST_TRAINER_NAME, active);
+    private TrainerDao getTestTrainer(final boolean active) {
+        return new TrainerDao(TEST_TRAINER_ID, TEST_LOCATION, TEST_TRAINER_NAME, active);
     }
     
     private void saveTestTrainer(final boolean active) {

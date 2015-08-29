@@ -7,17 +7,17 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 
 @DynamoDBTable(tableName = "Trainers")
-public class Trainer {
+public class TrainerDao {
     private String id;
     private String location;
     private String name;
     private boolean active;
     
-    public Trainer() {
+    public TrainerDao() {
         
     }
     
-    public Trainer(final String id, final String location, final String name, final boolean active) {
+    public TrainerDao(final String id, final String location, final String name, final boolean active) {
         this.id = id;
         this.location = location;
         this.name = name;

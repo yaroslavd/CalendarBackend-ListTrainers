@@ -11,7 +11,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 import personal.dvinov.calendar.service.api.common.util.ContextLogger;
-import personal.dvinov.calendar.service.core.trainers.dao.Trainer;
+import personal.dvinov.calendar.service.core.trainers.dao.TrainerDao;
 import personal.dvinov.calendar.service.core.trainers.dao.TrainerLoader;
 
 public class ListTrainersHandler implements RequestHandler<ListTrainersRequest, ListTrainersResponse> {
@@ -32,7 +32,7 @@ public class ListTrainersHandler implements RequestHandler<ListTrainersRequest, 
         
         Validate.notNull(input.getLocation(), "Validation exception: 'location' parameter is required");
         
-        final List<Trainer> loadedTrainers = trainerLoader.listActiveTrainers(input.getLocation());
+        final List<TrainerDao> loadedTrainers = trainerLoader.listActiveTrainers(input.getLocation());
         final List<ListTrainersResponse.Trainer> trainersToReturn = loadedTrainers.stream()
                 .map(trainer -> new ListTrainersResponse.Trainer(trainer.getId(), trainer.getName()))
                 .collect(Collectors.toList());

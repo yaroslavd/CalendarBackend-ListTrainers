@@ -15,6 +15,8 @@ import org.junit.Test;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 
+import personal.dvinov.calendar.service.core.trainers.business.BookedSlotBusinessObject;
+
 public class BookedSlotAdapterTest {
     private static final String TABLE_NAME = "BookedSlots";
     
@@ -39,26 +41,27 @@ public class BookedSlotAdapterTest {
     
     @Before
     public void setUpTest() {
-        createDynamoTable(client, mapper, TABLE_NAME, BookedSlot.class);
+        createDynamoTable(client, mapper, TABLE_NAME, BookedSlotDao.class);
     }
     
     @Test
     public void afterNoInsertionsListReturnsEmptyList() {
-        final List<BookedSlot> result = adapter.listBookedSlots(TRAINER_ID, START_DATE, END_DATE);
+        final List<BookedSlotBusinessObject> result = adapter.listBookedSlots(TRAINER_ID, START_DATE, END_DATE);
         assertTrue(result.isEmpty());
     }
     
     @Test
     public void afterInsertionWithinIntervalListReturnsSlot() {
-        final BookedSlot insertedSlot = insertSlot(
-                Instant.parse("2015-08-30T09:00:30Z"),
-                Instant.parse("2015-08-30T10:00:30Z"),
-                "2015-08-30-01");
+        final Instant slotStartTime = Instant.parse("2015-08-30T09:00:30Z");
+        final Instant slotEndTime = Instant.parse("2015-08-30T10:00:30Z");
+        insertSlot(slotStartTime, slotEndTime, "2015-08-30-01");
 
-        final List<BookedSlot> result = adapter.listBookedSlots(TRAINER_ID, START_DATE, END_DATE);
+        final List<BookedSlotBusinessObject> result = adapter.listBookedSlots(TRAINER_ID, START_DATE, END_DATE);
         
         assertEquals(1, result.size());
-        compareSlots(insertedSlot, result.get(0));
+        final BookedSlotBusinessObject expectedSlot =
+                new BookedSlotBusinessObject(slotStartTime, slotEndTime, 1);
+        assertEquals(expectedSlot, result.get(0));
     }
     
     @Test
@@ -68,7 +71,7 @@ public class BookedSlotAdapterTest {
                 Instant.parse("2015-08-31T10:00:30Z"),
                 "2015-08-30-01");
 
-        final List<BookedSlot> result = adapter.listBookedSlots(TRAINER_ID, START_DATE, END_DATE);
+        final List<BookedSlotBusinessObject> result = adapter.listBookedSlots(TRAINER_ID, START_DATE, END_DATE);
         
         assertTrue(result.isEmpty());
     }
@@ -81,29 +84,15 @@ public class BookedSlotAdapterTest {
      * @param dayPlusSlot
      * @return
      */
-    private BookedSlot insertSlot(final Instant slotStart,
+    private BookedSlotDao insertSlot(final Instant slotStart,
                                     final Instant slotEnd,
                                     final String dayPlusSlot) {
         
-        final BookedSlot slot = new BookedSlot(
+        final BookedSlotDao slot = new BookedSlotDao(
                 TRAINER_ID, dayPlusSlot, CLIENT_ID, Date.from(slotStart), Date.from(slotEnd));
         
         mapper.save(slot);
         
         return slot;
-    }
-    
-    /**
-     * Compare slots for attributes we get back from Dynamo.
-     * We only request some attributes back from Dynamo since application
-     * already knows the others, so let's only check for these attributes.
-     * 
-     * @param expected
-     * @param actual
-     */
-    private void compareSlots(final BookedSlot expected, final BookedSlot actual) {
-        assertEquals(expected.getDayPlusSlot(), expected.getDayPlusSlot());
-        assertEquals(expected.getStartTime(), expected.getStartTime());
-        assertEquals(expected.getEndTime(), expected.getEndTime());
     }
 }
