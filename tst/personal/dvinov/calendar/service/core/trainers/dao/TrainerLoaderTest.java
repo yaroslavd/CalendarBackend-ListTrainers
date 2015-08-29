@@ -1,18 +1,18 @@
 package personal.dvinov.calendar.service.core.trainers.dao;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static personal.dvinov.calendar.service.fixture.TestUtils.createDynamoTable;
+
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
-import com.amazonaws.services.dynamodbv2.util.Tables;
-
-import static org.junit.Assert.*;
-
-import java.util.List;
 
 public class TrainerLoaderTest {
     private static final String TABLE_NAME = "Trainers";
@@ -37,13 +37,7 @@ public class TrainerLoaderTest {
     
     @Before
     public void setUpTest() {
-        
-        if (Tables.doesTableExist(client, TABLE_NAME)) {
-            client.deleteTable(TABLE_NAME);
-        }
-        
-        CreateTableRequest createTableRequest = mapper.generateCreateTableRequest(Trainer.class);
-        client.createTable(createTableRequest.withProvisionedThroughput(new ProvisionedThroughput(1L, 1L)));
+        createDynamoTable(client, mapper, TABLE_NAME, Trainer.class);
     }
     
     @Test
