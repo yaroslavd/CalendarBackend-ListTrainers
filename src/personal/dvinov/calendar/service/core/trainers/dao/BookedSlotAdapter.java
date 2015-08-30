@@ -16,7 +16,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.google.common.collect.ImmutableMap;
 
-import personal.dvinov.calendar.service.core.trainers.business.BookedSlotBusinessObject;
+import personal.dvinov.calendar.service.core.trainers.business.SlotBusinessObject;
 
 public class BookedSlotAdapter {
     // Uses named capturing groups
@@ -38,7 +38,7 @@ public class BookedSlotAdapter {
      * @param endTime
      * @return list of booked slots as business objects
      */
-    public List<BookedSlotBusinessObject> listBookedSlots(final String trainerId, final Instant startTime, final Instant endTime) {
+    public List<SlotBusinessObject> listBookedSlots(final String trainerId, final Instant startTime, final Instant endTime) {
         final List<BookedSlotDao> fromDynamo = mapper.query(
                 BookedSlotDao.class, listBookedSlotsExpression(trainerId, startTime, endTime));
         
@@ -82,8 +82,8 @@ public class BookedSlotAdapter {
         return LocalDateTime.ofInstant(time, ZoneId.systemDefault()).truncatedTo(ChronoUnit.DAYS);
     }
     
-    private Function<BookedSlotDao, BookedSlotBusinessObject> fromDaoToBo() {
-        return (dao) -> new BookedSlotBusinessObject(
+    private Function<BookedSlotDao, SlotBusinessObject> fromDaoToBo() {
+        return (dao) -> new SlotBusinessObject(
                 dao.getStartTime().toInstant(),
                 dao.getEndTime().toInstant(),
                 slotFromDayPlusSlot(dao.getDayPlusSlot()));

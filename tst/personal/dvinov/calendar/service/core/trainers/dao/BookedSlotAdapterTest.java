@@ -15,7 +15,7 @@ import org.junit.Test;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 
-import personal.dvinov.calendar.service.core.trainers.business.BookedSlotBusinessObject;
+import personal.dvinov.calendar.service.core.trainers.business.SlotBusinessObject;
 
 public class BookedSlotAdapterTest {
     private static final String TABLE_NAME = "BookedSlots";
@@ -49,7 +49,7 @@ public class BookedSlotAdapterTest {
     
     @Test
     public void afterNoInsertionsListReturnsEmptyList() {
-        final List<BookedSlotBusinessObject> result = adapter.listBookedSlots(
+        final List<SlotBusinessObject> result = adapter.listBookedSlots(
                 TRAINER_ID, SEARCH_INTERVAL_START_TIME, SEARCH_INTERVAL_END_TIME);
         assertTrue(result.isEmpty());
     }
@@ -58,12 +58,12 @@ public class BookedSlotAdapterTest {
     public void afterInsertionWithinIntervalListReturnsSlot() {
         insertSlot(SLOT_START_TIME_WITHIN_INTERVAL, SLOT_END_TIME_WITHIN_INTERVAL, "2015-08-30-01");
 
-        final List<BookedSlotBusinessObject> result = adapter.listBookedSlots(
+        final List<SlotBusinessObject> result = adapter.listBookedSlots(
                 TRAINER_ID, SEARCH_INTERVAL_START_TIME, SEARCH_INTERVAL_END_TIME);
         
         assertEquals(1, result.size());
-        final BookedSlotBusinessObject expectedSlot =
-                new BookedSlotBusinessObject(SLOT_START_TIME_WITHIN_INTERVAL, SLOT_END_TIME_WITHIN_INTERVAL, 1);
+        final SlotBusinessObject expectedSlot =
+                new SlotBusinessObject(SLOT_START_TIME_WITHIN_INTERVAL, SLOT_END_TIME_WITHIN_INTERVAL, 1);
         assertEquals(expectedSlot, result.get(0));
     }
     
@@ -74,7 +74,7 @@ public class BookedSlotAdapterTest {
                 Instant.parse("2015-08-31T10:00:30Z"),
                 "2015-08-30-01");
 
-        final List<BookedSlotBusinessObject> result =
+        final List<SlotBusinessObject> result =
                 adapter.listBookedSlots(TRAINER_ID, SEARCH_INTERVAL_START_TIME, SEARCH_INTERVAL_END_TIME);
         
         assertTrue(result.isEmpty());

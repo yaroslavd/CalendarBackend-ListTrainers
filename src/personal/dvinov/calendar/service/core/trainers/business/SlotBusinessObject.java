@@ -4,15 +4,12 @@ import java.time.Instant;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
-public class BookedSlotBusinessObject {
+public class SlotBusinessObject {
     private final Instant slotStartTime;
     private final Instant slotEndTime;
     private final int slot;
     
-    public BookedSlotBusinessObject(Instant slotStartTime,
-            Instant slotEndTime,
-            int slot) {
-
+    public SlotBusinessObject(Instant slotStartTime, Instant slotEndTime, int slot) {
         this.slotStartTime = slotStartTime;
         this.slotEndTime = slotEndTime;
         this.slot = slot;
@@ -44,7 +41,7 @@ public class BookedSlotBusinessObject {
             return false;
         }
         
-        BookedSlotBusinessObject other = (BookedSlotBusinessObject) obj;
+        SlotBusinessObject other = (SlotBusinessObject) obj;
         
         return new EqualsBuilder()
                 .append(slotStartTime, other.getSlotStartTime())
