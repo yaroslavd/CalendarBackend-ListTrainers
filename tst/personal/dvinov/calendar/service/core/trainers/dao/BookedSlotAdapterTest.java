@@ -22,8 +22,11 @@ public class BookedSlotAdapterTest {
     
     private static final String TRAINER_ID = "trainerId";
     private static final String CLIENT_ID = "clientId";
-    private static final Instant START_DATE = Instant.parse("2015-08-29T10:15:30Z");
-    private static final Instant END_DATE = Instant.parse("2015-08-30T10:15:30Z");
+    
+    private static final Instant SEARCH_INTERVAL_START_TIME =       Instant.parse("2015-08-29T10:15:30Z");
+    private static final Instant SEARCH_INTERVAL_END_TIME =         Instant.parse("2015-08-30T10:15:30Z");
+    private static final Instant SLOT_START_TIME_WITHIN_INTERVAL =  Instant.parse("2015-08-30T09:00:30Z");
+    private static final Instant SLOT_END_TIME_WITHIN_INTERVAL =    Instant.parse("2015-08-30T10:00:30Z");
     
     private static DynamoDBMapper mapper;
     private static BookedSlotAdapter adapter;
@@ -31,9 +34,9 @@ public class BookedSlotAdapterTest {
     
     @BeforeClass
     public static void setUpSuite() {
-        client = new AmazonDynamoDBClient();
-        // http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tools.DynamoDBLocal.html
-        client.setEndpoint("http://localhost:8010");
+        client = new AmazonDynamoDBClient()
+                // http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tools.DynamoDBLocal.html
+                .withEndpoint("http://localhost:8010");
         
         mapper = new DynamoDBMapper(client);
         adapter = new BookedSlotAdapter(mapper);
@@ -46,21 +49,21 @@ public class BookedSlotAdapterTest {
     
     @Test
     public void afterNoInsertionsListReturnsEmptyList() {
-        final List<BookedSlotBusinessObject> result = adapter.listBookedSlots(TRAINER_ID, START_DATE, END_DATE);
+        final List<BookedSlotBusinessObject> result = adapter.listBookedSlots(
+                TRAINER_ID, SEARCH_INTERVAL_START_TIME, SEARCH_INTERVAL_END_TIME);
         assertTrue(result.isEmpty());
     }
     
     @Test
     public void afterInsertionWithinIntervalListReturnsSlot() {
-        final Instant slotStartTime = Instant.parse("2015-08-30T09:00:30Z");
-        final Instant slotEndTime = Instant.parse("2015-08-30T10:00:30Z");
-        insertSlot(slotStartTime, slotEndTime, "2015-08-30-01");
+        insertSlot(SLOT_START_TIME_WITHIN_INTERVAL, SLOT_END_TIME_WITHIN_INTERVAL, "2015-08-30-01");
 
-        final List<BookedSlotBusinessObject> result = adapter.listBookedSlots(TRAINER_ID, START_DATE, END_DATE);
+        final List<BookedSlotBusinessObject> result = adapter.listBookedSlots(
+                TRAINER_ID, SEARCH_INTERVAL_START_TIME, SEARCH_INTERVAL_END_TIME);
         
         assertEquals(1, result.size());
         final BookedSlotBusinessObject expectedSlot =
-                new BookedSlotBusinessObject(slotStartTime, slotEndTime, 1);
+                new BookedSlotBusinessObject(SLOT_START_TIME_WITHIN_INTERVAL, SLOT_END_TIME_WITHIN_INTERVAL, 1);
         assertEquals(expectedSlot, result.get(0));
     }
     
@@ -71,9 +74,17 @@ public class BookedSlotAdapterTest {
                 Instant.parse("2015-08-31T10:00:30Z"),
                 "2015-08-30-01");
 
-        final List<BookedSlotBusinessObject> result = adapter.listBookedSlots(TRAINER_ID, START_DATE, END_DATE);
+        final List<BookedSlotBusinessObject> result =
+                adapter.listBookedSlots(TRAINER_ID, SEARCH_INTERVAL_START_TIME, SEARCH_INTERVAL_END_TIME);
         
         assertTrue(result.isEmpty());
+    }
+    
+    @Test(expected = IllegalStateException.class)
+    public void afterInsertionWithMalformedDayPlusSlotThrowsIllegalStateException() {
+        insertSlot(SLOT_START_TIME_WITHIN_INTERVAL, SLOT_END_TIME_WITHIN_INTERVAL, "2015-08-30-01BLAH");
+        
+        adapter.listBookedSlots(TRAINER_ID, SEARCH_INTERVAL_START_TIME, SEARCH_INTERVAL_END_TIME);
     }
     
     /**

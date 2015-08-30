@@ -28,6 +28,5 @@ public class TestUtils {
         final CreateTableRequest createTableRequest = mapper.generateCreateTableRequest(tablePojo);
         client.createTable(createTableRequest.withProvisionedThroughput(
                 new ProvisionedThroughput(1L, 1L)));
-
     }
 }

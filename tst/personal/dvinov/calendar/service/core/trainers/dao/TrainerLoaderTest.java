@@ -27,9 +27,9 @@ public class TrainerLoaderTest {
     
     @BeforeClass
     public static void setUpSuite() {
-        client = new AmazonDynamoDBClient();
-        // http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tools.DynamoDBLocal.html
-        client.setEndpoint("http://localhost:8010");
+        client = new AmazonDynamoDBClient()
+                // http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tools.DynamoDBLocal.html
+                .withEndpoint("http://localhost:8010");
         
         mapper = new DynamoDBMapper(client);
         loader = new TrainerLoader(mapper);

@@ -30,6 +30,14 @@ public class BookedSlotAdapter {
         this.mapper = mapper;
     }
     
+    /**
+     * Fetches booked slots for that trainer in the interval provided
+     * 
+     * @param trainerId
+     * @param startTime
+     * @param endTime
+     * @return list of booked slots as business objects
+     */
     public List<BookedSlotBusinessObject> listBookedSlots(final String trainerId, final Instant startTime, final Instant endTime) {
         final List<BookedSlotDao> fromDynamo = mapper.query(
                 BookedSlotDao.class, listBookedSlotsExpression(trainerId, startTime, endTime));
@@ -51,6 +59,7 @@ public class BookedSlotAdapter {
             .withKeyConditionExpression(
                     "trainerId = :trainerId AND dayPlusSlot BETWEEN :startDayPlusSlot AND :endDayPlusSlot")
             .withFilterExpression("startTime >= :startTime AND endTime < :endTime")
+            // we only care about these attributes since the caller knows the others
             .withProjectionExpression("dayPlusSlot, startTime, endTime")
             .withExpressionAttributeValues(ImmutableMap.of(
                     ":trainerId", new AttributeValue().withS(trainerId),
@@ -80,13 +89,19 @@ public class BookedSlotAdapter {
                 slotFromDayPlusSlot(dao.getDayPlusSlot()));
     }
     
-    private int slotFromDayPlusSlot(final String dayPlusSlot) {
+    private int slotFromDayPlusSlot(final String dayPlusSlot) throws IllegalStateException {
         final Matcher matcher = DAY_PLUS_SLOT_PATTERN.matcher(dayPlusSlot);
         if (!matcher.matches()) {
             throw new IllegalStateException("No slot found in dayPlusSlot field '" + dayPlusSlot + "'");
         }
         
         final String slotString =  matcher.group("slot");
-        return Integer.parseInt(slotString);
+        try {
+            return Integer.parseInt(slotString);
+        }
+        catch (NumberFormatException e) {
+            throw new IllegalStateException(
+                    "Slot not parseable into int in dayPlusSlot field '" + dayPlusSlot + "'", e);
+        }
     }
 }
