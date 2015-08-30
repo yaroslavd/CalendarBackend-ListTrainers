@@ -3,6 +3,8 @@ package personal.dvinov.calendar.service.core.trainers.business;
 import java.time.Instant;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class SlotBusinessObject {
     private final Instant slotStartTime;
@@ -28,6 +30,15 @@ public class SlotBusinessObject {
     }
     
     @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append(slotStartTime)
+                .append(slotEndTime)
+                .append(slot)
+        .build();
+    }
+    
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -47,6 +58,15 @@ public class SlotBusinessObject {
                 .append(slotStartTime, other.getSlotStartTime())
                 .append(slotEndTime, other.getSlotEndTime())
                 .append(slot, other.getSlot())
+        .build();
+    }
+    
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(slotStartTime)
+                .append(slotEndTime)
+                .append(slot)
         .build();
     }
 }
