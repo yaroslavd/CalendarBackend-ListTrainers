@@ -38,6 +38,7 @@ public class EligibleSlotIterator implements Iterator<SlotBusinessObject> {
         
         cursor = firstSlot();
         advanceToNextDayIfNeeded();
+        advanceToBusinessOpenIfNeeded();
     }
     
     @Override
@@ -76,6 +77,12 @@ public class EligibleSlotIterator implements Iterator<SlotBusinessObject> {
         
         while (!daysOfWeekOpen.contains(cursor.getDayOfWeek())) {
             advanceToNextDay();
+        }
+    }
+    
+    private void advanceToBusinessOpenIfNeeded() {
+        if (currentSlotEnd().toLocalTime().isBefore(businessOpen)) {
+            cursor = LocalDateTime.of(cursor.toLocalDate(), businessOpen);
         }
     }
     

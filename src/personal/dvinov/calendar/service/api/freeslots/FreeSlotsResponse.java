@@ -1,6 +1,6 @@
 package personal.dvinov.calendar.service.api.freeslots;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 public class FreeSlotsResponse {
@@ -45,13 +45,13 @@ public class FreeSlotsResponse {
         }
     }
     
-    private Map<Day, List<Slot>> freeSlots;
+    private Map<Day, Collection<Slot>> freeSlots;
     
-    public FreeSlotsResponse(final Map<Day, List<Slot>> freeSlots) {
+    public FreeSlotsResponse(final Map<Day, Collection<Slot>> freeSlots) {
         this.freeSlots = freeSlots;
     }
 
-    public Map<Day, List<Slot>> getFreeSlots() {
+    public Map<Day, Collection<Slot>> getFreeSlots() {
         return freeSlots;
     }
 }

@@ -1,6 +1,6 @@
 {
-    "queryIntervalStart": "2015-08-29T14:00:00Z",
-    "queryIntervalEnd": "2015-08-30T14:00:00Z",
+    "queryIntervalStart": "2015-09-01T14:00:00Z",
+    "queryIntervalEnd": "2015-09-03T14:00:00Z",
     "location": "Seattle",
     "trainerId": "456"
 }

@@ -28,6 +28,14 @@ public class EligibleSlotIteratorTest {
     }
     
     @Test
+    public void skipsMornings() {
+        assertExpectedSlots(LocalDateTime.of(2015, Month.AUGUST, 28, 05, 0),
+                            LocalDateTime.of(2015, Month.AUGUST, 28, 10, 0),
+                            28, 9
+        );
+    }
+    
+    @Test
     public void skipsEvenings() {
         assertExpectedSlots(LocalDateTime.of(2015, Month.AUGUST, 27, 16, 0),
                             LocalDateTime.of(2015, Month.AUGUST, 28, 10, 0),

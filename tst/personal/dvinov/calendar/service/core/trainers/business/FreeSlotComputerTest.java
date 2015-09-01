@@ -27,17 +27,12 @@ public class FreeSlotComputerTest {
     
     @Mock
     private BookedSlotAdapter bookedSlotAdapter;
-    private final Iterable<SlotBusinessObject> eligibleSlots =
-            new WeekdayNineToFiveHourLongEligibleSlotProvider(
-                    TIME_ZONE,
-                    LOCAL_INTERVAL_START,
-                    LOCAL_INTERVAL_END);
     private FreeSlotComputer computer;
     
     @Before
     public void setUp() {
         initMocks(this);
-        computer = new FreeSlotComputer(bookedSlotAdapter, eligibleSlots);
+        computer = new FreeSlotComputer(bookedSlotAdapter);
     }
     
     @Test
@@ -47,7 +42,7 @@ public class FreeSlotComputerTest {
         expectedBookedSlotAdapterToReturn(booked);
         
         final List<SlotBusinessObject> computedFree =
-                computer.computeFreeSlots(INSTANT_INTERVAL_START, INSTANT_INTERVAL_END, TRAINER_ID);
+                computer.computeFreeSlots(INSTANT_INTERVAL_START, INSTANT_INTERVAL_END, TIME_ZONE, TRAINER_ID);
         
         final List<SlotBusinessObject> expectedFree = ImmutableList.of(
                 new SlotBusinessObject(INSTANT_INTERVAL_START, INSTANT_INTERVAL_END, 0)
@@ -63,7 +58,7 @@ public class FreeSlotComputerTest {
         expectedBookedSlotAdapterToReturn(booked);
         
         final List<SlotBusinessObject> computedFree =
-                computer.computeFreeSlots(INSTANT_INTERVAL_START, INSTANT_INTERVAL_END, TRAINER_ID);
+                computer.computeFreeSlots(INSTANT_INTERVAL_START, INSTANT_INTERVAL_END, TIME_ZONE, TRAINER_ID);
         
         final List<SlotBusinessObject> expectedFree = ImmutableList.of(
         );
