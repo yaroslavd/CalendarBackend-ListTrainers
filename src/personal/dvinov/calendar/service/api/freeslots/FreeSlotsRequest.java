@@ -34,7 +34,7 @@ public class FreeSlotsRequest {
         this.queryIntervalStart = Instant.parse(queryIntervalStart);
     }
 
-    public Instant setQueryIntervalEnd() {
+    public Instant getQueryIntervalEnd() {
         return queryIntervalEnd;
     }
 
