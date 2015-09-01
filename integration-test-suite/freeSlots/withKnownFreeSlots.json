@@ -1,13 +1,6 @@
 {
-    "inclusiveStartDay": {
-        "year":  2015,
-        "month": 8,
-        "day":   23
-    },
-    "inclusiveEndDay": {
-        "year":  2015,
-        "month": 8,
-        "day":   30
-    },
-    "trainerId": "123"
+    "queryIntervalStart": "2015-08-29T14:00:00Z",
+    "queryIntervalEnd": "2015-08-30T14:00:00Z",
+    "location": "Seattle",
+    "trainerId": "456"
 }
