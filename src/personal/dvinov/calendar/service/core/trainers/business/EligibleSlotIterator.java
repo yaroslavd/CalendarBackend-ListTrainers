@@ -81,7 +81,7 @@ public class EligibleSlotIterator implements Iterator<SlotBusinessObject> {
     }
     
     private void advanceToBusinessOpenIfNeeded() {
-        if (currentSlotEnd().toLocalTime().isBefore(businessOpen)) {
+        if (cursor.toLocalTime().isBefore(businessOpen)) {
             cursor = LocalDateTime.of(cursor.toLocalDate(), businessOpen);
         }
     }
