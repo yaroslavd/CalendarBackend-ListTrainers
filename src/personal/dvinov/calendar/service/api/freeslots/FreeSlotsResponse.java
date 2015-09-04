@@ -113,4 +113,11 @@ public class FreeSlotsResponse {
     public List<Slot> getFreeSlots() {
         return freeSlots;
     }
+    
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append(freeSlots)
+        .build();
+    }
 }
