@@ -18,6 +18,7 @@ import personal.dvinov.calendar.service.api.listtrainers.ListTrainersRequest;
 import personal.dvinov.calendar.service.api.listtrainers.ListTrainersResponse;
 import personal.dvinov.calendar.service.core.trainers.dao.TrainerDao;
 import personal.dvinov.calendar.service.core.trainers.dao.TrainerLoader;
+import personal.dvinov.calendar.service.fixture.TestContext;
 
 public class ListTrainersHandlerTest {
     private static final String FAKE_TRAINER_NAME = "Yaro";

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
@@ -11,8 +12,6 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
 
 import personal.dvinov.calendar.service.api.common.util.ContextLogger;
 import personal.dvinov.calendar.service.api.freeslots.FreeSlotsResponse.Slot;
@@ -56,31 +55,13 @@ public class FreeSlotsHandler implements RequestHandler<FreeSlotsRequest, FreeSl
             final List<SlotBusinessObject> businessObjects,
             final ZoneId zoneId) {
         
-        final Multimap<Day, Slot> resultMap =
-                LinkedListMultimap.create(businessObjects.size());
+        final List<Slot> slots = businessObjects.stream()
+                .map(bo -> slotFromBusinessObject(bo, zoneId))
+                .collect(Collectors.toList());
         
-        for (SlotBusinessObject bo : businessObjects) {
-            resultMap.put(dayFromSlotBusinessObject(bo, zoneId), slotFromBusinessObject(bo, zoneId));
-        }
-        
-        return new FreeSlotsResponse(resultMap.asMap());
+        return new FreeSlotsResponse(slots);
     }
     
-    private Day dayFromSlotBusinessObject(
-            final SlotBusinessObject slotBusinessObject,
-            final ZoneId zoneId
-            ) {
-        
-        final LocalDateTime localStartTime =
-                LocalDateTime.ofInstant(slotBusinessObject.getSlotStartTime(), zoneId);
-        
-        return new Day(
-                localStartTime.getYear(),
-                localStartTime.getMonthValue(),
-                localStartTime.getDayOfMonth()
-        );
-    }
-
     private Slot slotFromBusinessObject(
             final SlotBusinessObject slotBusinessObject,
             final ZoneId zoneId
@@ -92,7 +73,9 @@ public class FreeSlotsHandler implements RequestHandler<FreeSlotsRequest, FreeSl
                 LocalDateTime.ofInstant(slotBusinessObject.getSlotEndTime(), zoneId);
         
         return new Slot(
-                slotBusinessObject.getSlot(),
+                localStartTime.getYear(),
+                localStartTime.getMonthValue(),
+                localStartTime.getDayOfMonth(),slotBusinessObject.getSlot(),
                 localStartTime.getHour(),
                 localStartTime.getMinute(),
                 localEndTime.getHour(),

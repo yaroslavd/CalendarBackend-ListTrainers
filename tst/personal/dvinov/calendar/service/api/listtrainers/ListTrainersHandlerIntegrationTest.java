@@ -11,6 +11,7 @@ import personal.dvinov.calendar.service.api.listtrainers.ListTrainersHandler;
 import personal.dvinov.calendar.service.api.listtrainers.ListTrainersRequest;
 import personal.dvinov.calendar.service.api.listtrainers.ListTrainersResponse;
 import personal.dvinov.calendar.service.api.listtrainers.ListTrainersResponse.Trainer;
+import personal.dvinov.calendar.service.fixture.TestContext;
 
 public class ListTrainersHandlerIntegrationTest {
     private static final String KNOWN_TRAINER_NAME = "Yaro";
