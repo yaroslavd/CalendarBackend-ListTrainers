@@ -1,6 +1,7 @@
 package personal.dvinov.calendar.service.api.freeslots;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -31,7 +32,7 @@ public class FreeSlotsRequest {
     }
 
     public void setQueryIntervalStart(final String queryIntervalStart) {
-        this.queryIntervalStart = Instant.parse(queryIntervalStart);
+        this.queryIntervalStart = ZonedDateTime.parse(queryIntervalStart).toInstant();
     }
 
     public Instant getQueryIntervalEnd() {
@@ -39,7 +40,7 @@ public class FreeSlotsRequest {
     }
 
     public void setQueryIntervalEnd(final String queryIntervalEnd) {
-        this.queryIntervalEnd = Instant.parse(queryIntervalEnd);
+        this.queryIntervalEnd = ZonedDateTime.parse(queryIntervalEnd).toInstant();
     }
 
     public String getLocation() {
