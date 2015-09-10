@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
 
 import personal.dvinov.calendar.service.core.trainers.business.SlotBusinessObject;
 
@@ -102,6 +103,27 @@ public class BookedSlotAdapterTest {
         
         final BookedSlotDao fromDynamo = mapper.load(expected);
         assertTrue(fromDynamo != null);
+    }
+    
+    @Test
+    public void bookingSlotTwiceStoresSlotIdempotently() {
+        adapter.bookSlot(TRAINER_ID, CLIENT_ID, 2015, 9, 9, 0, TIME_ZONE);
+        adapter.bookSlot(TRAINER_ID, CLIENT_ID, 2015, 9, 9, 0, TIME_ZONE);
+        
+        final LocalDateTime startTime = LocalDateTime.of(2015, 9, 9, 9, 0);
+        final LocalDateTime endTime = LocalDateTime.of(2015, 9, 9, 10, 0);
+        final BookedSlotDao expected = new BookedSlotDao(TRAINER_ID, "2015-09-09-00", CLIENT_ID,
+                Date.from(startTime.atZone(TIME_ZONE).toInstant()),
+                Date.from(endTime.atZone(TIME_ZONE).toInstant()));
+        
+        final BookedSlotDao fromDynamo = mapper.load(expected);
+        assertTrue(fromDynamo != null);
+    }
+    
+    @Test(expected = ConditionalCheckFailedException.class)
+    public void overwritingSlotWithNewClientThrowsConditionalCheckFailedException() {
+        adapter.bookSlot(TRAINER_ID, CLIENT_ID, 2015, 9, 9, 0, TIME_ZONE);
+        adapter.bookSlot(TRAINER_ID, "NEW_CLIENT_ID", 2015, 9, 9, 0, TIME_ZONE);
     }
     
     /**

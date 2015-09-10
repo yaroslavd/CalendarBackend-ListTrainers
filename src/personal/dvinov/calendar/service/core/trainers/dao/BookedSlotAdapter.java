@@ -15,7 +15,10 @@ import java.util.stream.Collectors;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
+import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
 import com.google.common.collect.ImmutableMap;
 
 import personal.dvinov.calendar.service.core.trainers.business.EligibleSlotConfiguration;
@@ -76,7 +79,22 @@ public class BookedSlotAdapter {
                 Date.from(slotStart.atZone(zoneId).toInstant()),
                 Date.from(slotEnd.atZone(zoneId).toInstant()));
         
-        mapper.save(toDynamo);
+        try {
+            mapper.save(toDynamo, bookSlotExpression(clientId));
+        }
+        catch (ConditionalCheckFailedException e) {
+            // we generally don't allow overwriting slots
+            // however, we allow overwriting a slot if it's already booked by this client
+            // this is ugly, we should instead use
+            // http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.SpecifyingConditions.html#ConditionExpressionReference
+            // unfortunately, DynamoDBMapper doesn't yet support these, and its "expected" conditions
+            // are not expressive enough so here we are...
+            final BookedSlotDao toLoad = new BookedSlotDao(trainerId, dayPlusSlot, null, null, null);
+            final BookedSlotDao bookedSlot = mapper.load(toLoad);
+            if (!bookedSlot.getClientId().equals(clientId)) {
+                throw new ConditionalCheckFailedException("Slot " + dayPlusSlot + " is already booked by a different client");
+            }
+        }
     }
     
     private DynamoDBQueryExpression<BookedSlotDao> listBookedSlotsExpression(
@@ -101,6 +119,16 @@ public class BookedSlotAdapter {
                     ":startTime", new AttributeValue().withS(startTime.toString()),
                     ":endTime", new AttributeValue().withS(endTime.toString())
              ));
+    }
+    
+    private DynamoDBSaveExpression bookSlotExpression(final String clientId) {
+//        final ImmutableMap<String, ExpectedAttributeValue> expected
+        
+        return new DynamoDBSaveExpression()
+//                .withConditionalOperator(ConditionalOperator.OR)
+                .withExpectedEntry("clientId", new ExpectedAttributeValue().withExists(false));
+//                .withExpectedEntry("clientId",
+//                        new ExpectedAttributeValue(new AttributeValue().withS(clientId)));
     }
 
     private String dayFromInstant(
