@@ -68,7 +68,7 @@ public class BookedSlotAdapter {
             final int month,
             final int day,
             final int slot,
-            final ZoneId zoneId) {
+            final ZoneId zoneId) throws ConditionalCheckFailedException {
         
         final String dayPlusSlot = dayPlusSlotFromComponents(year, month, day, slot);
         final LocalDateTime slotStart = LocalDateTime.of(year, month, day, slot + BUSINESS_OPEN.getHour(), 0);

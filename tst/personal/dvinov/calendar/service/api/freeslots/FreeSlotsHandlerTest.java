@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.google.common.collect.ImmutableList;
 
+import personal.dvinov.calendar.service.api.common.LocationConfiguration;
 import personal.dvinov.calendar.service.api.freeslots.FreeSlotsResponse.Slot;
 import personal.dvinov.calendar.service.core.trainers.business.FreeSlotComputer;
 import personal.dvinov.calendar.service.core.trainers.business.SlotBusinessObject;
@@ -73,7 +74,7 @@ public class FreeSlotsHandlerTest {
         final FreeSlotsRequest request = new FreeSlotsRequest(START, END, LOCATION, TRAINER_ID);
         when(computer.computeFreeSlots(START, END, ZONE, TRAINER_ID)).thenReturn(freeSlotsResult);
         
-        final FreeSlotsHandler handler = new FreeSlotsHandler(computer);
+        final FreeSlotsHandler handler = new FreeSlotsHandler(computer, new LocationConfiguration());
         
         Assert.assertEquals(expectedResponse, handler.handleRequest(request, CONTEXT).getFreeSlots());
     }
