@@ -28,7 +28,7 @@ public class FreeSlotComputer {
             final String trainerId) {
         
         final List<SlotBusinessObject> bookedSlots =
-                bookedSlotAdapter.listBookedSlots(trainerId, start, end);
+                bookedSlotAdapter.listBookedSlots(trainerId, start, end, zoneId);
         // Convert to Set for O(1) lookup
         final Set<SlotBusinessObject> bookedSlotSet = ImmutableSet.copyOf(bookedSlots);
         

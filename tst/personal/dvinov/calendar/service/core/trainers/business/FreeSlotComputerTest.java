@@ -69,7 +69,8 @@ public class FreeSlotComputerTest {
         when(bookedSlotAdapter.listBookedSlots(
                 TRAINER_ID,
                 INSTANT_INTERVAL_START,
-                INSTANT_INTERVAL_END))
+                INSTANT_INTERVAL_END,
+                TIME_ZONE))
         .thenReturn(toReturn);
     }
 }
